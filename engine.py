@@ -7,6 +7,7 @@ from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
 from components.fighter import Fighter
+from death_functions import kill_monster, kill_player
 
 def main():
     screen_width = 80
@@ -104,7 +105,11 @@ def main():
                 print (message)
 
             if dead_entity:
-                pass # We'll do something here momentarily
+                if dead_entity == player:
+                    message, game_state = kill_player(dead_entity)
+                else:
+                    message = kill_monster(dead_entity)
+                print(message)
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
@@ -119,7 +124,15 @@ def main():
                             print (message)
 
                         if dead_entity:
-                            pass
+                            if dead_entity == player:
+                                message, game_state = kill_player(dead_entity)
+                            else:
+                                message = kill_monster(dead_entity)
+                            print(message)
+                            if game_state == GameStates.PLAYER_DEAD:
+                                break
+                    if game_state == GameStates.PLAYER_DEAD:
+                        break
             else:
                 game_state = GameStates.PLAYERS_TURN
 
