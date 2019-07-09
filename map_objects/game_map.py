@@ -5,6 +5,7 @@ from entity import Entity
 import tcod as libtcod
 from components.fighter import Fighter
 from components.ai import BasicMonster
+from render_functions import RenderOrder
 
 class GameMap:
     def __init__(self, width, height):
@@ -102,11 +103,13 @@ class GameMap:
                     fighter_component = Fighter(hp=10, defence=0, power=3)
                     ai_component = BasicMonster()
 
-                    monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc', blocks=True, fighter=fighter_component, ai=ai_component)
+                    monster = Entity(x, y, 'o', libtcod.desaturated_green, 'Orc', render_order=RenderOrder.ACTOR,
+                                     blocks=True, fighter=fighter_component, ai=ai_component)
                 else:
                     fighter_component = Fighter(hp=10, defence=0, power=3)
                     ai_component = BasicMonster()
 
-                    monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', blocks=True, fighter=fighter_component, ai=ai_component)
+                    monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', render_order=RenderOrder.ACTOR,
+                                     blocks=True, fighter=fighter_component, ai=ai_component)
 
             entities.append(monster)
