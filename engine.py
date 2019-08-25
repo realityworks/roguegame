@@ -10,10 +10,16 @@ from components.fighter import Fighter
 from death_functions import kill_monster, kill_player
 
 def main():
+
     screen_width = 80
     screen_height = 50
+
+    bar_width = 20
+    panel_height = 7
+    panel_y = screen_height - panel_height
+
     map_width = 80
-    map_height = 45
+    map_height = 43
 
     room_max_size = 10
     room_min_size = 8
@@ -46,6 +52,9 @@ def main():
 
     print("Creating console...")
     con = libtcod.console_new(screen_width, screen_height)
+
+    print("Setting up view...")
+    panel = libtcod.console_new(screen_width, panel_height)
 
     print("Generating map...")
     game_map = GameMap(map_width, map_height)
