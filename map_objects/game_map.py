@@ -112,4 +112,4 @@ class GameMap:
                     monster = Entity(x, y, 'T', libtcod.darker_green, 'Troll', render_order=RenderOrder.ACTOR,
                                      blocks=True, fighter=fighter_component, ai=ai_component)
 
-            entities.append(monster)
+                entities.append(monster)
