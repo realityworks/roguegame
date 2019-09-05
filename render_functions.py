@@ -52,10 +52,6 @@ def render_all(con, panel, entities, player, game_map, fov_map,
     for entity in entities_ordered:
         __draw_entity(con, entity, fov_map)
 
-    #libtcod.console_set_default_foreground(con, libtcod.white)
-    #libtcod.console_print_ex(con, 1, screen_height - 2, libtcod.BKGND_NONE, libtcod.LEFT,
-    #                         'HP: {0:02}/{1:02}'.format(player.fighter.hp, player.fighter.max_hp))
-
     libtcod.console_blit(con, 0, 0, screen_width, screen_height, 0, 0, 0)
 
     libtcod.console_set_default_background(panel, libtcod.black)
