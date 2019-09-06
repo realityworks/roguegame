@@ -9,6 +9,7 @@ from game_states import GameStates
 from components.fighter import Fighter
 from death_functions import kill_monster, kill_player
 from game_messages import Message, MessageLog
+from components.inventory import Inventory
 
 def main():
 
@@ -46,7 +47,9 @@ def main():
 
     print ("Creating Player Entity...")
     fighter_component = Fighter(hp=30, defence=2, power=5)
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component)
+    inventory_component = Inventory(26)
+    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
+                    fighter=fighter_component, inventory=inventory_component)
 
     entities = [player]
 
@@ -97,6 +100,7 @@ def main():
         action = handle_keys(key)
 
         move = action.get('move')
+        pickup = action.get('pickup')
         exit = action.get('exit')
         # fullscreen = action.get('fullscreen')
 
