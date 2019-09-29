@@ -78,6 +78,7 @@ def main():
     key = libtcod.Key()
     mouse = libtcod.Mouse()
     game_state = GameStates.PLAYERS_TURN
+    previous_game_state = game_state
 
     while not libtcod.console_is_window_closed():
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
@@ -89,7 +90,7 @@ def main():
                    fov_map, fov_recompute,
                    message_log,
                    screen_width, screen_height,
-                   bar_width, panel_height, panel_y, colors)
+                   bar_width, panel_height, panel_y, colors, game_state)
 
         fov_recompute = False
 
@@ -101,6 +102,7 @@ def main():
 
         move = action.get('move')
         pickup = action.get('pickup')
+        show_inventory = action.get('show_inventory')
         exit = action.get('exit')
         # fullscreen = action.get('fullscreen')
 
@@ -122,13 +124,31 @@ def main():
                     fov_recompute = True
 
                 game_state = GameStates.ENEMY_TURN
+        elif pickup and game_state == GameStates.PLAYERS_TURN:
+            for entity in entities:
+                if entity.item and entity.x == player.x and entity.y == player.y:
+                    pickup_results = player.inventory.add_item(entity)
+                    player_turn_results.extend(pickup_results)
+
+                    break
+            else:
+                message_log.add_message(Message('There is nothing here to pick up'), libtcod.yellow)
+
+        if show_inventory:
+            previous_game_state = game_state
+            game_state = GameStates.SHOW_INVENTORY
 
         if exit:
-            return True
+            if game_state == GameStates.SHOW_INVENTORY:
+                game_state = previous_game_state
+            else:
+                return True
 
         for player_turn_results in player_turn_results:
             message = player_turn_results.get('message')
             dead_entity = player_turn_results.get('dead')
+            item_added = player_turn_results.get('item_added')
+
             if message:
                 message_log.add_message(message)
 
@@ -138,6 +158,10 @@ def main():
                 else:
                     message = kill_monster(dead_entity)
                 message_log.add_message(message)
+
+            if item_added:
+                entities.remove(item_added)
+                game_state = GameStates.ENEMY_TURN
 
         if game_state == GameStates.ENEMY_TURN:
             for entity in entities:
