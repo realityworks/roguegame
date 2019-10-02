@@ -58,7 +58,7 @@ class GameMap:
         (new_x, new_y) = new_room.center()
         (prev_x, prev_y) = old_room.center()
 
-        if (0, 1) == 1:
+        if randint(0, 1) == 1:
             self.create_h_tunnel(prev_x, new_x, prev_y)
             self.create_v_tunnel(prev_y, new_y, new_x)
         else:
@@ -79,8 +79,8 @@ class GameMap:
 
     # ------------------------------------------------------------------------
     def create_room(self, room):
-        for x in range(room.x1 + 1, room.x2):
-            for y in range(room.y1 + 1, room.y2):
+        for x in range(room.x1+1, room.x2):
+            for y in range(room.y1+1, room.y2):
                 self.tiles[x][y].blocked = False
                 self.tiles[x][y].block_sight = False
 

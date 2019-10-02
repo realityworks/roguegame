@@ -28,8 +28,8 @@ def main():
     map_height = 43
 
     room_max_size = 10
-    room_min_size = 8
-    max_rooms = 10
+    room_min_size = 6
+    max_rooms = 5
 
     fov_algorithm = 0
     fov_light_walls = True
