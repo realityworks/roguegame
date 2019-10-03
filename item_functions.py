@@ -2,6 +2,7 @@ import tcod as libtcod
 
 from game_messages import Message
 
+
 def heal(*args, **kwargs):
     entity = args[0]
     amount = kwargs.get('amount')
