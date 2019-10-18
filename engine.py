@@ -57,7 +57,7 @@ def main():
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 
     print("Initializing Console with SDL2 renderer")
-    libtcod.console_init_root(screen_width, screen_height,'libtcod Tutorial Revised', False, libtcod.RENDERER_SDL2)
+    libtcod.console_init_root(screen_width, screen_height,'roguegame', False, libtcod.RENDERER_SDL2)
 
     print("Creating console...")
     con = libtcod.console_new(screen_width, screen_height)
