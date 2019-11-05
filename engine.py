@@ -1,28 +1,18 @@
 import tcod as libtcod
 
-from render_functions import render_all, clear_all, RenderOrder
-from entity import Entity, get_blocking_entities_at_location
+from render_functions import render_all, clear_all
+from entity import get_blocking_entities_at_location
 from input_handlers import handle_keys, handle_mouse
-from map_objects.game_map import GameMap
 from fov_functions import initialize_fov, recompute_fov
 from game_states import GameStates
-from components.fighter import Fighter
 from death_functions import kill_monster, kill_player
-from game_messages import Message, MessageLog
-from components.inventory import Inventory
-from loader_functions.initialize_new_game import get_constants
+from game_messages import Message
+from loader_functions.initialize_new_game import get_constants, get_game_variables
+
 
 def main():
 
     constants = get_constants()
-
-    print ("Creating Player Entity...")
-    fighter_component = Fighter(hp=30, defence=2, power=5)
-    inventory_component = Inventory(26)
-    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
-                    fighter=fighter_component, inventory=inventory_component)
-
-    entities = [player]
 
     print("Setting up custom font...")
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
@@ -36,15 +26,8 @@ def main():
     print("Setting up view...")
     panel = libtcod.console_new(constants['screen_width'], constants['panel_height'])
 
-    print("Setting up the message log...")
-    message_log = MessageLog(constants['message_x'], constants['message_width'], constants['message_height'])
-
-    print("Generating map...")
-    game_map = GameMap(constants['map_width'], constants['map_height'])
-    game_map.make_map(constants['max_rooms'], constants['room_min_size'],
-                      constants['room_max_size'], constants['map_width'], constants['map_height'],
-                      constants['player'], constants['entities'],
-                      constants['max_monsters_per_room'], constants['max_items_per_room'])
+    print("Creating player and map")
+    player, entities, game_map, message_log, game_state = get_game_variables(constants)
 
     fov_map = initialize_fov(constants['game_map'])
 

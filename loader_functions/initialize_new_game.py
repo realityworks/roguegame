@@ -1,4 +1,11 @@
 import tcod as libtcod
+from components.fighter import Fighter
+from components.inventory import Inventory
+from entity import Entity
+from game_states import GameStates
+from map_objects.game_map import GameMap
+from render_functions import RenderOrder
+from game_messages import MessageLog
 
 def get_constants():
     window_title = 'Roguelike Tutorial Revised'
@@ -59,3 +66,23 @@ def get_constants():
     }
 
     return constants
+
+
+def get_game_variables(constants):
+    fighter_component = Fighter(hp=30, defense=2, power=5)
+
+    inventory_component = Inventory(26)
+    player = Entity(0, 0, '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR,
+                fighter=fighter_component, inventory=inventory_component)
+    entities = [player]
+
+    game_map = GameMap(constants['map_width'], constants['map_height'])
+    game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
+                     constants['map_width'], constants['map_height'], player, entities,
+                     constants['max_monsters_per_room'], constants['max_items_per_room'])
+
+    message_log = MessageLog(constants['message_x'], constants['message_width'], constants['message_height'])
+
+    game_state = GameStates.PLAYERS_TURN
+
+    return player, entities, game_map, message_log, game_state
