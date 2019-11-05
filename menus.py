@@ -1,6 +1,22 @@
 import tcod as libtcod
 
 
+def main_menu(con, background_image, screen_width, screen_height):
+   libtcod.image_blit_2x(background_image, 0, 0, 0)
+
+   libtcod.console_set_default_foreground(0, libtcod.light_yellow)
+   libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height / 2) - 4, libtcod.BKGND_NONE, libtcod.CENTER,
+                            'ROGUE TEST GAME')
+   libtcod.console_print_ex(0, int(screen_width / 2), int(screen_height - 2), libtcod.BKGND_NONE, libtcod.CENTER,
+                            'REALITYWORKS')
+
+   menu(con, '', ['Play a new game', 'Continue last game', 'Quit'], 24, screen_width, screen_height)
+
+
+def message_box(con, header, width, screen_width, screen_height):
+   menu(con, header, [], width, screen_width, screen_height)
+
+
 def menu(con, header, options, width, screen_width, screen_height):
     if len(options) > 26: raise ValueError('Cannot have a menu with than 26 options.')
     header_height = libtcod.console_get_height_rect(con, 0, 0, width, screen_height, header)
