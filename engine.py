@@ -10,40 +10,11 @@ from components.fighter import Fighter
 from death_functions import kill_monster, kill_player
 from game_messages import Message, MessageLog
 from components.inventory import Inventory
+from loader_functions.initialize_new_game import get_constants
 
 def main():
 
-    screen_width = 80
-    screen_height = 50
-
-    bar_width = 20
-    panel_height = 7
-    panel_y = screen_height - panel_height
-
-    message_x = bar_width + 2
-    message_width = screen_width - bar_width - 2
-    message_height = panel_height - 1
-
-    map_width = 80
-    map_height = 43
-
-    room_max_size = 10
-    room_min_size = 6
-    max_rooms = 10
-
-    fov_algorithm = 0
-    fov_light_walls = True
-    fov_radius = 10
-    fov_recompute = True
-    max_monsters_per_room = 3
-    max_items_per_room = 2
-
-    colors = {
-        'dark_wall': libtcod.Color(0, 0, 100),
-        'dark_ground': libtcod.Color(50, 50, 150),
-        'light_wall': libtcod.Color(130, 110, 50),
-        'light_ground': libtcod.Color(200, 180, 50)
-    }
+    constants = get_constants()
 
     print ("Creating Player Entity...")
     fighter_component = Fighter(hp=30, defence=2, power=5)
@@ -57,23 +28,25 @@ def main():
     libtcod.console_set_custom_font('arial10x10.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 
     print("Initializing Console with SDL2 renderer")
-    libtcod.console_init_root(screen_width, screen_height,'roguegame', False, libtcod.RENDERER_SDL2)
+    libtcod.console_init_root(constants['screen_width'], constants['screen_height'],'roguegame', False, libtcod.RENDERER_SDL2)
 
     print("Creating console...")
-    con = libtcod.console_new(screen_width, screen_height)
+    con = libtcod.console_new(constants['screen_width'], constants['screen_height'])
 
     print("Setting up view...")
-    panel = libtcod.console_new(screen_width, panel_height)
+    panel = libtcod.console_new(constants['screen_width'], constants['panel_height'])
 
     print("Setting up the message log...")
-    message_log = MessageLog(message_x, message_width, message_height)
+    message_log = MessageLog(constants['message_x'], constants['message_width'], constants['message_height'])
 
     print("Generating map...")
-    game_map = GameMap(map_width, map_height)
-    game_map.make_map(max_rooms, room_min_size, room_max_size, map_width, map_height, player, entities,
-                      max_monsters_per_room, max_items_per_room)
+    game_map = GameMap(constants['map_width'], constants['map_height'])
+    game_map.make_map(constants['max_rooms'], constants['room_min_size'],
+                      constants['room_max_size'], constants['map_width'], constants['map_height'],
+                      constants['player'], constants['entities'],
+                      constants['max_monsters_per_room'], constants['max_items_per_room'])
 
-    fov_map = initialize_fov(game_map)
+    fov_map = initialize_fov(constants['game_map'])
 
     key = libtcod.Key()
     mouse = libtcod.Mouse()
@@ -86,13 +59,17 @@ def main():
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS, key, mouse)
 
         if fov_recompute:
-            recompute_fov(fov_map, player.x, player.y, fov_radius, fov_light_walls, fov_algorithm)
+            recompute_fov(fov_map, player.x, player.y,
+                          constants['fov_radius'],
+                          constants['fov_light_walls'],
+                          constants['fov_algorithm'])
 
         render_all(con, panel, entities, player, game_map,
                    fov_map, fov_recompute,
                    message_log,
-                   screen_width, screen_height,
-                   bar_width, panel_height, panel_y, colors, game_state)
+                   constants['screen_width'], constants['screen_height'],
+                   constants['bar_width'], constants['panel_height'],
+                   constants['panel_y'], constants['colors'], constants['game_state'])
 
         fov_recompute = False
 
