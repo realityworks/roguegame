@@ -4,10 +4,12 @@ from menus import inventory_menu
 
 from enum import Enum
 
+
 class RenderOrder(Enum):
-    CORPSE = 1
-    ITEM = 2
-    ACTOR = 3
+    STAIRS = 1
+    CORPSE = 2
+    ITEM = 3
+    ACTOR = 4
 
 
 def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_color):
