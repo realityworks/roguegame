@@ -44,7 +44,7 @@ class GameMap:
 
             # run through the other rooms and see if they intersect with this one
             for other_room in rooms:
-                if new_room.intersect(other_room):
+                if new_room.intersect_with_distance(other_room, 2):
                     break
             else:
                 # this means there are no intersections, so this room is valid
@@ -55,35 +55,35 @@ class GameMap:
                 # center coordinates of new room, will be useful later
                 (new_x, new_y) = new_room.center()
 
-            center_of_last_room_x = new_x
-            center_of_last_room_y = new_y
+                center_of_last_room_x = new_x
+                center_of_last_room_y = new_y
 
-            if num_rooms == 0:
-                # this is the first room, where the player starts at
-                player.x = new_x
-                player.y = new_y
-            else:
-                # all rooms after the first:
-                # connect it to the previous room with a tunnel
-
-                # center coordinates of previous room
-                (prev_x, prev_y) = rooms[num_rooms - 1].center()
-
-                # flip a coin (random number that is either 0 or 1)
-                if randint(0, 1) == 1:
-                    # first move horizontally, then vertically
-                    self.create_h_tunnel(prev_x, new_x, prev_y)
-                    self.create_v_tunnel(prev_y, new_y, new_x)
+                if num_rooms == 0:
+                    # this is the first room, where the player starts at
+                    player.x = new_x
+                    player.y = new_y
                 else:
-                    # first move vertically, then horizontally
-                    self.create_v_tunnel(prev_y, new_y, prev_x)
-                    self.create_h_tunnel(prev_x, new_x, new_y)
+                    # all rooms after the first:
+                    # connect it to the previous room with a tunnel
 
-                self.place_entities(new_room, entities, max_monsters_per_room, max_items_per_room)
+                    # center coordinates of previous room
+                    (prev_x, prev_y) = rooms[num_rooms - 1].center()
 
-            # finally, append the new room to the list
-            rooms.append(new_room)
-            num_rooms += 1
+                    # flip a coin (random number that is either 0 or 1)
+                    if randint(0, 1) == 1:
+                        # first move horizontally, then vertically
+                        self.create_h_tunnel(prev_x, new_x, prev_y)
+                        self.create_v_tunnel(prev_y, new_y, new_x)
+                    else:
+                        # first move vertically, then horizontally
+                        self.create_v_tunnel(prev_y, new_y, prev_x)
+                        self.create_h_tunnel(prev_x, new_x, new_y)
+
+                    self.place_entities(new_room, entities, max_monsters_per_room, max_items_per_room)
+
+                # finally, append the new room to the list
+                rooms.append(new_room)
+                num_rooms += 1
 
         stairs_component = Stairs(self.dungeon_level + 1)
         down_stairs = Entity(center_of_last_room_x, center_of_last_room_y, '>', libtcod.white, 'Stairs',
@@ -116,8 +116,8 @@ class GameMap:
 
     # ------------------------------------------------------------------------
     def create_room(self, room):
-        for x in range(room.x1+1, room.x2):
-            for y in range(room.y1+1, room.y2):
+        for x in range(room.x1 + 1, room.x2):
+            for y in range(room.y1 + 1, room.y2):
                 self.tiles[x][y].blocked = False
                 self.tiles[x][y].block_sight = False
 
@@ -128,9 +128,7 @@ class GameMap:
         else:
             return False
 
-
     def place_entities(self, room, entities, max_monsters_per_room, max_items_per_room):
-
         # Random number of monsters
         number_of_monsters = randint(0, max_monsters_per_room)
         number_of_items = randint(0, max_items_per_room)
@@ -192,7 +190,7 @@ class GameMap:
 
         self.tiles = self.initialize_tiles()
         self.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'],
-                      constants['max_width'], constants['map_height'], player, entities,
+                      constants['map_width'], constants['map_height'], player, entities,
                       constants['max_monsters_per_room'], constants['max_items_per_room'])
 
         player.fighter.heal(player.fighter.max_hp // 2)
